@@ -1,26 +1,30 @@
-MIT License
+Restricted License – IBVI Meilisearch Specs
+Copyright (c) 2025 IBVI. All rights reserved.
 
-Copyright (c) 2024 IBVI
+1. Grant of Rights  
+   IBVI hereby grants you a limited, non-transferable, non-sublicensable, revocable license to view this documentation solely for the purpose of evaluating IBVI’s search schemas. No other rights (including the rights to reproduce, distribute, publicly display, create derivative works, or otherwise exploit the contents) are granted.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+2. Prohibited Uses  
+   You may NOT:
+   - Copy, modify, translate, adapt, or create derivative works from this repository;
+   - Distribute, sell, rent, lease, sublicense, or otherwise transfer any portion of the contents;
+   - Publish or disclose any portion of the documentation to third parties without prior written consent from IBVI;
+   - Use the documentation or any related know-how to build or assist in building competing products or services;
+   - Remove or alter any proprietary notices.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+3. Confidentiality  
+   All contents of this repository are confidential information of IBVI. You agree to protect this information with at least the same degree of care that you use to protect your own confidential information, and in no case less than reasonable care.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+4. Termination  
+   IBVI may revoke this license at any time, with or without cause. Upon termination, you must immediately cease all use of the documentation and destroy any copies (in whole or in part) in your possession or control.
 
----
+5. No Warranty  
+   The documentation is provided “AS IS” without warranty of any kind. IBVI disclaims all warranties, express or implied, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.
 
-Note: The specifications in this repository are licensed under MIT.
-The indexed data is © IBVI and all rights reserved.
+6. Limitation of Liability  
+   To the maximum extent permitted by law, IBVI shall not be liable for any damages arising from or related to your use of, or inability to use, the documentation, whether in contract, tort, or any other legal theory, even if IBVI has been advised of the possibility of such damages.
+
+7. Governing Law  
+   This license shall be governed by and construed in accordance with the laws of Brazil, without regard to its conflict of law principles. Any disputes shall be resolved exclusively in the courts located in São Paulo, Brazil.
+
+By viewing or accessing this repository, you acknowledge that you have read, understood, and agree to be bound by the terms above. Any use not expressly permitted herein is strictly prohibited.

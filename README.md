@@ -86,5 +86,5 @@ Todos os índices estão otimizados para busca em português:
 
 ## License
 
-Specifications: MIT  
+Specifications: Restricted – see LICENSE  
 Data: © IBVI - All rights reserved
