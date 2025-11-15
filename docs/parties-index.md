@@ -1,66 +1,48 @@
 # Índice: ibvi_parties
 
-> **Status:** Em planejamento. Este documento descreve o formato esperado para clientes, owners e parceiros comerciais que participarão do grafo de relacionamento do IBVI.
+**Index name**: `ibvi_parties`  
+**Status**: 🚧 Em desenvolvimento  
 
-## Objetivo
-
-- Permitir busca rápida por pessoas envolvidas em um imóvel (proprietários, corretores, investidores).
-- Disponibilizar filtros por papel (`role`) e localização.
-- Servir de base para features de CRM e compliance.
-
-## Estrutura proposta
+## Estrutura Planejada
 
 ```json
 {
-  "id": "74397662-29a8-4fb5-9f03-5dd2f6528fb0",
-  "external_id": "crm_88921",
-  "full_name": "Maria Fernanda Lima",
-  "alias": "Maria Lima",
-  "email": "maria.lima@example.com",
-  "phone": "+55 21 99999-8888",
-  "document": "***.456.789-**",
-  "role": "owner",
-  "city": "Rio de Janeiro",
-  "state": "RJ",
-  "country": "BR",
-  "tags": ["vip", "priority"],
-  "updated_at": "2024-07-20T09:00:00Z",
-  "metadata": {
-    "source": "salesforce",
-    "manager_id": "a13bc3d2"
-  }
+  "id": "uuid-string",
+  "name": "João da Silva",
+  "party_type": "person|company",
+  "document": "12345678901",
+  "emails": ["joao@example.com"],
+  "phones": ["+5511999999999"],
+  "city": "SAO PAULO",
+  "state": "SP",
+  "neighborhood": "JARDIM EUROPA",
+  "tags": ["owner", "vip", "developer"]
 }
 ```
 
-## Searchable attributes
+## Campos Planejados
 
-- `full_name`
-- `alias`
-- `email`
-- `phone`
-- `tags`
+- **id**: UUID da party
+- **name**: Nome completo ou razão social
+- **party_type**: `person` ou `company`
+- **document**: CPF/CNPJ normalizado
+- **emails**: Array de emails
+- **phones**: Array de telefones
+- **city, state, neighborhood**: Localização principal
+- **tags**: Classificações (owner, buyer, vip, etc)
 
-## Filterable attributes
+## Configuração Planejada
 
-- `role` (enum: `owner`, `buyer`, `broker`, `investor`, `partner`)
-- `city`
-- `state`
-- `country`
-- `tags`
-- `metadata.source`
+### Searchable
+```json
+["name", "document", "emails", "phones", "city"]
+```
 
-## Sortable attributes
+### Filterable
+```json
+["party_type", "city", "state", "tags"]
+```
 
-- `role`
-- `updated_at`
+## Status
 
-## Requisitos de privacidade
-
-- Dados sensíveis (`document`, `email`, `phone`) devem ser mascarados conforme LGPD antes da indexação caso o contato opte por não ser contatado.
-- Apenas papéis aprovados pelo jurídico podem ser expostos publicamente.
-
-## Próximos passos
-
-1. Confirmar conjunto mínimo de campos obrigatórios com o time jurídico.
-2. Adicionar a flag `consent_opt_in` ao schema e documentar o comportamento.
-3. Integrar com o reindexador quando o dataset estiver maduro.
+Aguardando SQL query para implementação do indexador.

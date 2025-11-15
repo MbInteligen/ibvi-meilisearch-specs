@@ -1,121 +1,194 @@
 # Índice: ibvi_properties
 
-## Resumo
+**Index name**: `ibvi_properties`  
+**Documents**: ~1,447,997  
+**Update frequency**: On-demand via indexer  
 
-| Chave | Valor |
-| --- | --- |
-| Namespace | `ibvi` |
-| Nome do índice | `ibvi_properties` |
-| Fonte de dados | Tabela `ibvi_properties` no PostgreSQL (Neon) |
-| Responsável | Squad Data & Search |
-| Frequência de reindex | On-demand (GitHub Actions → Fly.io) |
-
-## Estrutura do documento
+## Estrutura do Documento
 
 ```json
 {
-  "id": "c1f71c3c-8fbc-4d1a-84e8-74b778df2629",
-  "slug": "apartamento-vista-mar-natal",
-  "title": "Apartamento vista mar em Natal",
-  "description": "Cobertura com 3 suítes, 2 vagas e vista definitiva para o mar.",
-  "city": "Natal",
-  "state": "RN",
-  "country": "BR",
-  "neighborhood": "Ponta Negra",
-  "price": 1450000,
-  "currency": "BRL",
-  "bedrooms": 3,
-  "bathrooms": 4,
-  "parking_spots": 2,
-  "area_m2": 198,
-  "status": "for_sale",
-  "is_highlight": true,
-  "tags": ["vista_mar", "cobertura"],
-  "amenities": ["pool", "elevator", "gated"],
-  "updated_at": "2024-08-04T12:17:45Z",
-  "metadata": {
-    "builder": "IBVI",
-    "reference_code": "IB-98233"
+  "id": "uuid-string",
+  "iptu_code": "12345678901",
+  "property_type": "residential|commercial|land|unknown",
+  
+  "street": "RUA EXEMPLO",
+  "number": "123",
+  "neighborhood": "JARDIM EUROPA",
+  "city": "SAO PAULO",
+  "state": "SP",
+  "zip_code": "01234000",
+  "formatted_address": "RUA EXEMPLO 123, JARDIM EUROPA...",
+  
+  "land_area_sqm": 500.0,
+  "built_area_sqm": 350.0,
+  "rooms_count": 4,
+  "bathrooms_count": 3,
+  "parking_spaces": 2,
+  
+  "market_value_brl": 2500000.0,
+  "price_bucket": "1M-3M",
+  
+  "_geo": {
+    "lat": -23.5505,
+    "lng": -46.6333
   }
 }
 ```
 
-## Campos obrigatórios
+## Campos
 
-| Campo | Tipo | Origem | Observações |
-| --- | --- | --- | --- |
-| `id` | `uuid` | `ibvi_properties.id` | Primary key / `primaryKey` no Meilisearch |
-| `slug` | `text` | `slug` | Usado para deep links no site |
-| `title` | `text` | `title` | Resumo curto exibido nas listagens |
-| `city` | `text` | `city` | Normalizado em Title Case |
-| `state` | `text` | `state` | Sigla de 2 letras |
-| `country` | `text` | `country` | Sempre `BR` por enquanto |
-| `status` | `text` | `status` | Enum: `for_sale`, `for_rent`, `sold`, `inactive` |
-| `price` | `number` | `price_cents / 100` | Em moeda inteira |
-| `updated_at` | `datetime` | `updated_at` | ISO-8601, UTC |
+### Identificação
+- **id** (string, required): UUID da propriedade
+- **iptu_code** (string, optional): Código IPTU da prefeitura
+- **property_type** (string, optional): Tipo do imóvel
 
-## Campos opcionais
+### Localização
+- **street** (string, optional): Nome da rua
+- **number** (string, optional): Número do imóvel
+- **neighborhood** (string, optional): Bairro
+- **city** (string, optional): Cidade
+- **state** (string, optional): Estado (UF)
+- **zip_code** (string, optional): CEP
+- **formatted_address** (string, optional): Endereço completo formatado
 
-`description`, `neighborhood`, `bedrooms`, `bathrooms`, `parking_spots`, `area_m2`, `is_highlight`, `tags`, `amenities`, `metadata`
+### Características
+- **land_area_sqm** (float, optional): Área do terreno em m²
+- **built_area_sqm** (float, optional): Área construída em m²
+- **rooms_count** (integer, optional): Número de quartos
+- **bathrooms_count** (integer, optional): Número de banheiros
+- **parking_spaces** (integer, optional): Número de vagas
 
-## Searchable attributes
+### Valores
+- **market_value_brl** (float, optional): Valor de mercado em BRL
+- **price_bucket** (string, optional): Faixa de preço
 
-1. `title`
-2. `description`
-3. `city`
-4. `neighborhood`
-5. `tags`
+### Geo
+- **_geo.lat** (float, optional): Latitude
+- **_geo.lng** (float, optional): Longitude
 
-## Filterable attributes
+## Price Buckets
 
-- `status`
-- `city`
-- `state`
-- `country`
-- `bedrooms`
-- `bathrooms`
-- `parking_spots`
-- `area_m2`
-- `price`
-- `is_highlight`
-- `tags`
-- `amenities`
+| Bucket | Range |
+|--------|-------|
+| `0-500k` | R$ 0 - R$ 500.000 |
+| `500k-1M` | R$ 500.000 - R$ 1.000.000 |
+| `1M-3M` | R$ 1.000.000 - R$ 3.000.000 |
+| `3M-6M` | R$ 3.000.000 - R$ 6.000.000 |
+| `6M-10M` | R$ 6.000.000 - R$ 10.000.000 |
+| `10M+` | > R$ 10.000.000 |
 
-## Sortable attributes
+## Configuração do Índice
 
-- `price`
-- `area_m2`
-- `bedrooms`
-- `bathrooms`
-- `updated_at`
+### Searchable Attributes
+```json
+[
+  "iptu_code",
+  "street",
+  "neighborhood",
+  "city",
+  "zip_code",
+  "formatted_address"
+]
+```
 
-## Facetas recomendadas
+### Filterable Attributes
+```json
+[
+  "property_type",
+  "city",
+  "state",
+  "neighborhood",
+  "market_value_brl",
+  "land_area_sqm",
+  "built_area_sqm",
+  "price_bucket"
+]
+```
 
-- `city`
-- `state`
-- `bedrooms`
-- `bathrooms`
-- `amenities`
+### Sortable Attributes
+```json
+[
+  "market_value_brl",
+  "land_area_sqm",
+  "built_area_sqm"
+]
+```
 
-## Ranking rules customizadas
+### Stopwords (PT-BR)
+```json
+["de", "da", "do", "das", "dos", "em", "na", "no", "nas", "nos", 
+ "para", "por", "com", "um", "uma", "uns", "umas", "o", "a", "os", "as", "e", "ou"]
+```
 
-1. `words`
-2. `typo`
-3. `proximity`
-4. `attribute`
-5. `sort`
-6. `exactness`
-7. **Regra customizada**: `desc(is_highlight)` (dá prioridade a vitrines)
-8. **Regra customizada**: `asc(price)` (preferir imóveis mais acessíveis quando empate)
+### Sinônimos
+```json
+{
+  "cobertura": ["penthouse"],
+  "penthouse": ["cobertura"],
+  "apartamento": ["apto", "ap"],
+  "apto": ["apartamento", "ap"],
+  "casa": ["residencia"]
+}
+```
 
-## Regras de negócio
+## Exemplos de Queries
 
-- `status = inactive` não deve ser indexado (filtrar na query SQL do indexador).
-- `price` precisa ser normalizado para a moeda atual; armazenamos `currency` para queries futuras.
-- `tags` e `amenities` devem estar em `snake_case`.
+### Busca simples por bairro
+```bash
+POST /indexes/ibvi_properties/search
+{
+  "q": "jardim europa"
+}
+```
 
-## Checklist pós mudança
+### Filtro por faixa de preço e cidade
+```bash
+POST /indexes/ibvi_properties/search
+{
+  "q": "apartamento",
+  "filter": "price_bucket = '3M-6M' AND city = 'SAO PAULO'"
+}
+```
 
-- Atualize `src/main.rs` no indexador com novos campos.
-- Gere um dump do índice de staging e compare com a especificação.
-- Abra issue pública descrevendo a alteração para parceiros de integração.
+### Busca geográfica (5km de raio)
+```bash
+POST /indexes/ibvi_properties/search
+{
+  "filter": "_geoRadius(-23.5505, -46.6333, 5000)"
+}
+```
+
+### Ordenação por valor
+```bash
+POST /indexes/ibvi_properties/search
+{
+  "q": "cobertura",
+  "filter": "neighborhood = 'JARDIM EUROPA'",
+  "sort": ["market_value_brl:desc"],
+  "limit": 10
+}
+```
+
+### Filtro por área construída
+```bash
+POST /indexes/ibvi_properties/search
+{
+  "filter": "built_area_sqm >= 200 AND built_area_sqm <= 500"
+}
+```
+
+### Facet search
+```bash
+POST /indexes/ibvi_properties/search
+{
+  "facets": ["price_bucket", "neighborhood", "property_type"]
+}
+```
+
+## Performance
+
+- **Average search latency**: <50ms (GRU region)
+- **Index size**: ~2.5GB
+- **RAM usage**: ~2GB (Meilisearch instance)
+- **Update time**: ~10-15min (full reindex of 1.4M docs)

@@ -1,33 +1,90 @@
 # IBVI Meilisearch Specs
 
-📖 **Public repository** – Documento vivo com as especificações oficiais dos índices do Meilisearch utilizados pelo IBVI.
+📖 **Public repository** - Especificações dos índices Meilisearch do IBVI.
 
-## Objetivo
+## Sobre
 
-Centralizar as definições (schema, ranking rules, filtros e convenções) que precisam ser sincronizadas entre engenharia, dados e produto. Cada mudança descrita aqui deve ser acompanhada por uma alteração equivalente no reindexador (`ibvi-meilisearch-indexer`).
+Documentação pública dos índices de busca mantidos pelo IBVI usando **Meilisearch**.
 
-## Estrutura
+Este repositório contém:
+- Estrutura dos documentos (properties, addresses, parties)
+- Convenções de nomes e filtros
+- Exemplos de queries e ordenação
+- Boas práticas para busca em português (stopwords, sinônimos)
 
-- `docs/properties-index.md` – especificações para `ibvi_properties`
-- `docs/addresses-index.md` – especificações para `ibvi_addresses`
-- `docs/parties-index.md` – blueprint inicial para `ibvi_parties`
+## Índices
 
-## Workflow sugerido
+### 🏠 Properties (`ibvi_properties`)
+**~1.4M documentos**
 
-1. Proponha alterações através de pull requests descrevendo o _rationale_.
-2. Atualize o reindexador com o novo schema antes de publicar.
-3. Gere um reindex completo no ambiente de staging e valide as buscas principais.
-4. Promova para produção quando o resultado estiver aprovado pelo time de produto.
+Propriedades imobiliárias em São Paulo com dados de IPTU, valores de mercado e geocoding.
 
-## Convenções gerais
+[📄 Documentação completa](docs/properties-index.md)
 
-- Todos os índices usam sintaxe `ibvi_<entidade>`.
-- Os campos `id` são `UUID v4` em todos os datasets.
-- Todos os carimbos de data/hora usam UTC (`TIMESTAMPTZ`).
-- Filtros booleanos devem obedecer ao padrão `*_flag`.
-- Sempre que houver campos com conteúdo sensível (ex.: documentos pessoais) eles devem ser mascarados ou omitidos antes de chegar ao Meilisearch.
+### 📍 Addresses (`ibvi_addresses`)
+**~2M+ documentos**
 
-## Repositórios relacionados
+Base de endereços brasileiros com normalização, geocoding e validação.
 
-- `ibvi-meilisearch-indexer` (privado): reindexador em Rust que materializa estes esquemas.
-- `ibvi-meilisearch-specs` (público): este repositório de referência.
+[📄 Documentação completa](docs/addresses-index.md)
+
+### 👥 Parties (`ibvi_parties`)
+**Em desenvolvimento**
+
+Pessoas físicas e jurídicas com dados de contato e relacionamentos.
+
+[📄 Documentação completa](docs/parties-index.md)
+
+## Quick Start
+
+### Exemplo: Buscar apartamentos em Jardim Europa
+
+```bash
+curl -X POST 'https://your-meili.ibvi.com/indexes/ibvi_properties/search' \
+  -H 'Authorization: Bearer YOUR_SEARCH_KEY' \
+  -H 'Content-Type: application/json' \
+  --data-binary '{
+    "q": "jardim europa apartamento",
+    "filter": "price_bucket = \"3M-6M\" AND city = \"SAO PAULO\"",
+    "limit": 20,
+    "sort": ["market_value_brl:desc"]
+  }'
+```
+
+### Exemplo: Busca geográfica (raio)
+
+```bash
+curl -X POST 'https://your-meili.ibvi.com/indexes/ibvi_properties/search' \
+  -H 'Authorization: Bearer YOUR_SEARCH_KEY' \
+  -H 'Content-Type: application/json' \
+  --data-binary '{
+    "filter": "_geoRadius(-23.5505, -46.6333, 5000)",
+    "limit": 50
+  }'
+```
+
+## Português
+
+Todos os índices estão otimizados para busca em português:
+- **Stopwords**: de, da, do, em, na, para, etc.
+- **Sinônimos**: cobertura↔penthouse, apartamento↔apto
+- **Typo tolerance**: Ativada por padrão
+- **Accent handling**: Normalização automática
+
+## Tecnologia
+
+- **Search Engine**: [Meilisearch](https://www.meilisearch.com/) v1.11+
+- **Database**: PostgreSQL 17 (Neon)
+- **Indexer**: Rust (privado)
+- **Hosting**: Fly.io (gru region)
+
+## Links
+
+- [Meilisearch Documentation](https://www.meilisearch.com/docs)
+- [IBVI Website](https://ibvi.com.br)
+- Indexer code: 🔒 Private repository
+
+## License
+
+Specifications: MIT  
+Data: © IBVI - All rights reserved

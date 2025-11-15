@@ -1,72 +1,85 @@
 # Índice: ibvi_addresses
 
-## Resumo
+**Index name**: `ibvi_addresses`  
+**Documents**: ~2M+  
+**Update frequency**: On-demand via indexer  
 
-| Chave | Valor |
-| --- | --- |
-| Nome do índice | `ibvi_addresses` |
-| Fonte | `ibvi_addresses` + `ibvi_properties` (join opcional) |
-| Responsável | Squad Data & Search |
-| Objetivo | Fornecer autosuggest de endereços e permitir filtros geográficos |
-
-## Estrutura do documento
+## Estrutura do Documento
 
 ```json
 {
-  "id": "b4d08e73-9a21-4df4-bd92-b21a6f19d878",
-  "property_id": "c1f71c3c-8fbc-4d1a-84e8-74b778df2629",
-  "display_name": "Rua das Flores, 123 - Jardim Europa, São Paulo",
-  "line1": "Rua das Flores, 123",
-  "city": "São Paulo",
+  "id": "uuid-string",
+  "street": "RUA EXEMPLO",
+  "street_type": "RUA",
+  "number": "123",
+  "neighborhood": "JARDIM EUROPA",
+  "city": "SAO PAULO",
   "state": "SP",
-  "country": "BR",
-  "postal_code": "01456-010",
-  "geo_lat": -23.570188,
-  "geo_lng": -46.67466,
-  "accuracy": "rooftop",
-  "updated_at": "2024-08-02T10:14:00Z",
-  "metadata": {
-    "zone": "zona-sul",
-    "ibge": "3550308"
+  "zip_code": "01234000",
+  "complement": "APTO 45",
+  "formatted_address": "RUA EXEMPLO 123, JARDIM EUROPA, SAO PAULO - SP, CEP 01234000",
+  "_geo": {
+    "lat": -23.5505,
+    "lng": -46.6333
   }
 }
 ```
 
-## Searchable attributes
+## Campos
 
-1. `display_name`
-2. `line1`
-3. `city`
-4. `postal_code`
+- **id** (string, required): UUID do endereço
+- **street** (string, optional): Nome da rua
+- **street_type** (string, optional): Tipo de logradouro (RUA, AV, etc)
+- **number** (string, optional): Número
+- **neighborhood** (string, optional): Bairro
+- **city** (string, optional): Cidade
+- **state** (string, optional): Estado (UF)
+- **zip_code** (string, optional): CEP
+- **complement** (string, optional): Complemento
+- **formatted_address** (string, optional): Endereço formatado
+- **_geo** (object, optional): Coordenadas geográficas
 
-## Filterable attributes
+## Configuração
 
-- `city`
-- `state`
-- `country`
-- `postal_code`
-- `accuracy`
-- `metadata.zone`
+### Searchable Attributes
+```json
+["street", "neighborhood", "city", "zip_code", "formatted_address"]
+```
 
-## Sortable attributes
+### Filterable Attributes
+```json
+["city", "state", "neighborhood"]
+```
 
-- `city`
-- `state`
-- `updated_at`
+### Stopwords (PT-BR)
+```json
+["de", "da", "do", "das", "dos", "em", "na", "no", "rua", "avenida", "travessa"]
+```
 
-## Facetas
+## Exemplos de Queries
 
-- `city`
-- `state`
-- `accuracy`
+### Busca por CEP
+```bash
+POST /indexes/ibvi_addresses/search
+{
+  "q": "01310100"
+}
+```
 
-## Notas de implementação
+### Busca por rua
+```bash
+POST /indexes/ibvi_addresses/search
+{
+  "q": "av paulista",
+  "filter": "city = 'SAO PAULO'"
+}
+```
 
-- `display_name` é montado pelo indexador concatenando `line1`, bairro e cidade.
-- Coordenadas (`geo_lat`, `geo_lng`) são opcionais, mas quando presentes habilitam ordenação por distância na API do Meilisearch (via `_geo` quando migrarmos para esse formato).
-- Endereços duplicados devem ser consolidados pelo `property_id` + `postal_code` antes da publicação.
-
-## Evoluções planejadas
-
-- Guardar `_geo` com tipo `{ "lat": <float>, "lng": <float> }`.
-- Adicionar flag `is_verified` para endereços auditados manualmente.
+### Autocomplete de endereço
+```bash
+POST /indexes/ibvi_addresses/search
+{
+  "q": "rua oscar fre",
+  "limit": 10
+}
+```
